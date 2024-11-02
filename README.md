@@ -15,7 +15,7 @@ android OfficeView support view word excel ppt pdf txt image in sdcard & uri & a
 <img src="https://github.com/wangchunfei/OfficeView/blob/master/SrceenShot/st_8.png" width = "275" height = "569"  /><br>
 
 ### Usage
-- Step 1. Add the JitPack repository to your build or setting file
+- Step 1. Add the JitPack repository to your build or setting file    啊啊啊
 
 ```
 build file:
