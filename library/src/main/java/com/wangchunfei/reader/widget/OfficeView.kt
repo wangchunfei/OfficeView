@@ -34,6 +34,7 @@ import com.wangchunfei.reader.bean.DocSourceType
 import com.wangchunfei.reader.bean.FileType
 import com.wangchunfei.reader.interfaces.OnDownloadListener
 import com.wangchunfei.reader.interfaces.OnDocPageChangeListener
+import com.wangchunfei.reader.interfaces.OnOpenListener
 import com.wangchunfei.reader.interfaces.OnPdfItemClickListener
 import com.wangchunfei.reader.interfaces.OnWebLoadListener
 import com.wangchunfei.reader.office.IOffice
@@ -154,10 +155,14 @@ class OfficeView : FrameLayout, OnDownloadListener, OnWebLoadListener, OnPdfItem
         openDoc(activity, docUrl, docSourceType,-1,false,engine)
     }
 
-    fun openDoc(activity: Activity?, docUrl: String?,
-                docSourceType: Int, fileType: Int,
+    fun openDoc(activity: Activity?,
+                docUrl: String?,
+                docSourceType: Int,
+                fileType: Int,
                 viewPdfInPage: Boolean = false,
-                engine: DocEngine = this.engine) {
+                engine: DocEngine = this.engine,
+                onOpenListener: OnOpenListener? = null
+              ) {
         var fileType = fileType
         var docUrl = docUrl
         var docSourceType = docSourceType
@@ -253,12 +258,12 @@ class OfficeView : FrameLayout, OnDownloadListener, OnWebLoadListener, OnPdfItem
                 mFlDocContainer.show()
                 mRvPdf.hide()
                 mIvImage.hide()
-                activity?.let { showDoc(it,mFlDocContainer,docUrl,docSourceType,fileType) }
+                activity?.let { showDoc(it,mFlDocContainer,docUrl,docSourceType,fileType,onOpenListener) }
             }
         }
     }
 
-    fun showDoc(activity: Activity, mDocContainer: ViewGroup?, url: String?, docSourceType: Int, fileType: Int) {
+    fun showDoc(activity: Activity, mDocContainer: ViewGroup?, url: String?, docSourceType: Int, fileType: Int, onOpenListener: OnOpenListener? = null) {
         Log.e(TAG,"showDoc()......")
         var iOffice: IOffice = object: IOffice() {
             override fun getActivity(): Activity {
@@ -283,7 +288,7 @@ class OfficeView : FrameLayout, OnDownloadListener, OnWebLoadListener, OnPdfItem
                     if (mPoiViewer == null) {
                         mPoiViewer = PoiViewer(context)
                     }
-                    mPoiViewer?.loadFile(mFlDocContainer, sourceFilePath)
+                    mPoiViewer?.loadFile(mFlDocContainer, sourceFilePath,onOpenListener)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(context, R.string.open_failed, Toast.LENGTH_SHORT).show()

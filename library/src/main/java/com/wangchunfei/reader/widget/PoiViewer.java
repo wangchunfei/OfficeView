@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.wangchunfei.reader.interfaces.OnOpenListener;
 import com.wangchunfei.reader.util.WordConverter;
 
 import org.apache.commons.io.FileUtils;
@@ -34,6 +35,8 @@ public class PoiViewer {
     private WebView mWebView;
 
     private ProgressDialog mProgressDialog;
+
+    private OnOpenListener onOpenListener;
 
     public PoiViewer(Context context) {
         mContext = context;
@@ -78,6 +81,15 @@ public class PoiViewer {
         new ConvertTask().execute(filePath);
     }
 
+    public void loadFile(ViewGroup fileLayout, String filePath,OnOpenListener listener) {
+        mRootView = fileLayout;
+        mFilePath = filePath;
+        mFileExt = filePath.substring(filePath.lastIndexOf("."));
+        onOpenListener = listener;
+        mProgressDialog.show();
+        new ConvertTask().execute(filePath);
+    }
+
     public class ConvertTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... objects) {
@@ -113,8 +125,12 @@ public class PoiViewer {
         protected void onPostExecute(String returnString) {
             mProgressDialog.dismiss();
             if (TextUtils.isEmpty(returnString)) {
-                Toast.makeText(mContext, "文件打开失败", Toast.LENGTH_SHORT).show();
-                scanForActivity(mContext).finish();
+                if(onOpenListener != null){
+                    onOpenListener.onOpenFaild();
+                }else {
+                    Toast.makeText(mContext, "文件打开失败", Toast.LENGTH_SHORT).show();
+                    scanForActivity(mContext).finish();
+                }
                 return;
             }
             mWebView.loadUrl(returnString);
