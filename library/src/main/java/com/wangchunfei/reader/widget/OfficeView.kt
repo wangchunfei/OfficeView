@@ -150,9 +150,9 @@ class OfficeView : FrameLayout, OnDownloadListener, OnWebLoadListener, OnPdfItem
 
 
     fun openDoc(activity: Activity, docUrl: String?, docSourceType: Int,
-                engine: DocEngine = this.engine) {
+                engine: DocEngine = this.engine, onOpenListener: OnOpenListener? = null) {
         mActivity = activity
-        openDoc(activity, docUrl, docSourceType,-1,false,engine)
+        openDoc(activity, docUrl, docSourceType,-1,false,engine,onOpenListener)
     }
 
     fun openDoc(activity: Activity?,
